@@ -1,0 +1,25 @@
+Terminology:
+VPC : Virtual private cloud
+  associated with particular region
+Subnets :  segment of vpc used for isolation . Cidr range is addigned for subnet based on vpc
+    - Public : ex web applications
+    - Private : ex : database
+    - Subnets are associated for particular availability zone
+Route tables :
+    Route tables are essential components in networking, especially within a VPC (Virtual Private Cloud). They are used to determine how network traffic is directed. Here are the key functions of route tables:
+    1. Traffic Routing: Route tables contain a set of rules, called routes, that specify where network traffic should be directed. Each route consists of a destination (IP address range) and a target (where to send the traffic).
+    2. Subnet Association: In a VPC, each subnet must be associated with a route table. This association determines the routing rules that apply to the subnet's traffic.
+    3. Internet Gateway: Route tables can direct traffic to an internet gateway, allowing instances in the VPC to communicate with the internet.
+    4. NAT Gateway: They can also route traffic to a NAT (Network Address Translation) gateway, enabling instances in private subnets to access the internet while remaining unreachable from the internet.
+    5. Peering Connections: Route tables can include routes for VPC peering connections, allowing traffic to flow between different VPCs.
+    6. VPN Connections: They can direct traffic to VPN (Virtual Private Network) connections, enabling secure communication between the VPC and on-premises networks.
+    
+Need to  create separate route tables for private and public route tables
+Need to attach ig and subnet to public route table
+Security Groups:
+Network Access control list  ( NACL ) :
+-----------------------------------------------------------------------------
+Notes:
+    - Subnets ranges should fall under vpc cidr range
+    - 12.0.1.0/16 means  starting two octets should be same ( a.b.c.d) --> ( a.b) should be same
+    Each octet is 8 bits . Total 32 bits
