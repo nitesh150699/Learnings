@@ -1,0 +1,13 @@
+Helm : Package manager
+Helm chart : 
+bundle of yml files 
+Usecase 1:  ( ex . If u want to deploy elastic stack on cluster for collecting logs . As this is a standard We can use already created chart  which contains secret , svc , config etc)
+Usecase 2: if u have multiple deployment files with slightest change like docker image name or version. Instead of creating multiple deployment files . Refer those from values.yml
+Syntax :  {{ .values.name }}
+Usecase 3: we can bundle our yml files into a helm chart while deploying code in different environments. We can simply install those charts with different yml files
+Structure:
+Mychart/
+    Chart.yml - metadata about chart
+    Values.yml - values for template files
+    Charts/  -  chart dependencies
+    Templates/ -  template files
