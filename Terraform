@@ -1,0 +1,32 @@
+files   :   .tf extension
+    - Providers  ( aws ): plugins provide to interract with aws resourses
+    - Teraform init : it checks all the providers download necessary plugins
+    - Terraform plan : gives what all changes gonna happen ( execution plan )
+( + : create , - : remove , ~ : modify )
+    - Outputs
+    - Variables
+    - Command line inputs
+    - Terraform.tfvars : all variables we can store in it
+----------------------------------------------------------------------------------------------
+Syntax :
+--------
+provider "provider_name" {
+    Options ….
+}
+---------
+resource "<provider>_<resourceType>" "name"{
+    Config options …
+}
+-------------
+--------------------------------------------------------------------------------------
+Commands :
+Terraform init
+Terraform plan : it provides what all changes 
+Terraform apply
+Terraform destroy
+List
+Show 
+state
+------------------------------------------------------------------------------------------
+Terminology:
+    - Providers : aws , gcp , azure
