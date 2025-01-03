@@ -1,0 +1,138 @@
+Container orchestrator 
+    1) A pod can contain multiple containers .
+    Usecase : container  + -->
+        - sidecar logging | 
+        - Adopter transform outputs ( adapter ) |
+        - proxy | 
+        - tightly coupled  
+    2) Services have permanent ip address
+            § Load balancer
+    3) Pod ip address changes when they r restarted or re created
+    4) Ingress : manages external access to services within a cluster
+        - It routes request to service based on routing rules
+        - Load Balancing
+        - SSL termination
+        - Canary deployments
+        
+    5) configMap : external configuration
+    6) Secret : credentials | base64 encoded - passwords , certs
+    7) Volumes : to avoid data loss  when there is a restart in db 
+        - It can refer to local or remote storage
+    
+    8) Deployment : replica set ( we can define min and max pods )
+    9) Statefullset :As databases has state . Deployments r not used to create another instance when it goes down and it helps in data synchronization
+    ----------------------------------------------------------------------------------------------------------
+    Architecture:
+    - Nodes : Master and slave node
+    - Each worker node should have the below 3
+        - Container run time ( Docker )
+        - Kubelet : node agent | communicates with control plane and  maintain podspec
+        - Kuber proxy: maintains network rules on nodes to implement services
+    Slave node : actual code runs in them
+    Master Node: 4 process
+        - Api Server :  gets initial req via ui or kubectl  | authentication
+        - Scheduler : decides on which node new pod should scheduled ( actual work done by kubelet )
+        - Controll manager : detect state change ( ex : when pod crashes  --> scheduler --> kubelet) 
+        - Etcd : key value store of cluster state
+     
+    
+    Flow : req came from ui --> api gateway --> scheduler ( checks cpu and memory of all nodes ) --> kubelet --> schedules a pod
+    
+    ---------------------------------------------------------------------------------------------------------------
+    
+    Minikube : 1 node k8s cluster ( using virtual box we can create multiple nodes )
+    Kubectl : for managing cluster | create del update | interract , describe
+    - Minikube is to create and delete cluster. Rest everything is done via kubectl
+    - We cannot create pods directly . Need to use deployment ( abstract layer over pod)
+    - Replicaset manage the replicas of pod ( part of deployment )
+    - Self healing : tries to achieve desire state by comparing it with active state
+    - Labels and selectors used to establish connections between components
+    - Services has endpoints section where it stores podIp:port  ( control plane updates these ip address in services. When this happens kube proxy observe changes and updates iptables
+    - Master node is referred as control plane
+    
+    - Ngnix : serves static content | reverse proxy | load balancer | ssl termination
+Podname = deploymentName-replicasetHash-randomHash
+---------------------------------------------------
+Syntaxes in yml files :
+    - Labels and names used to  match and identify each component
+    - Ports : 
+        ContainerPort : where docker container exposes 
+    - valueFrom :
+        secretKeyRef : to refer secrets 
+        
+    - Kind : Deployment / Secret / ConfigMap …..
+    - Other components use selector : ( label  of another component to link together)
+Service
+    Kind : Service
+    Selector should match with deployment
+    Port : targetPort should match with container port
+    
+Tip : to check whether we mapped service to correct pod or not by executing 
+Kubectl get pod -o wide
+Kubectl describe service <srvc-name>
+Validate endpoint : has ip address of pod
+-----------------------------------------------------------------------------------------------------------
+To get all info
+Kubectl get all | grep <label>
+-------------------------------------------------------------------------------------------------------------
+Services Types
+1. ClusterIP: This is the default service type. It exposes the service on an internal IP within the cluster, making it accessible only from within the cluster
+2. NodePort: This service type exposes the service on the same port of each selected node in the cluster, making it accessible from outside the cluster using <NodeIP>:<NodePort>
+3. LoadBalancer: This type creates an external load balancer (if supported by the cloud provider) and assigns a fixed, external IP to the service. It is used to expose services to the internet
+4. ExternalName: This service type maps a service to a DNS name, allowing you to access external services as if they were part of your cluster
+5. Ingress: Although not a service type itself, Ingress manages external access to services, typically HTTP. It provides load balancing, SSL termination, and name-based virtual hosting
+--------------------------------------------------------------------------------------------------------------------
+    - Nodeport has a limited range of ports
+    - clusterIp is default 
+    -------------------------------------------------------------------------------
+    
+Namespaces
+    - Organise components
+    - Limit  resources ( we can set cpu , memory limits based on namespace )
+    - Maintain different environments
+    - We need to specify namespace in metadata . Else it will create in default namespace
+----------------------------------------------------------------
+Ingress
+How to expose an app to external world ( browser )?
+Option 1 : by creating external service (nodeport and kind loadbalancer) - access : http //nodeportIp:port ( it does nt have domain name but we need to provide ip address of node )
+Option2 : create ingress 
+Kind : Ingress
+And provide routing rules with 
+    - Hostname
+    - Path and servicename and serviceport
+    
+( when host name matches ..and path matches it forwords request to service )
+-----------------------------------------------------------------------------------------------------------
+To make app https :
+ we need to include tls certificate in ingress refererring to secret
+Tls.crt , tls.key
+---------------------------------------------------------------------------------------------------------------
+Volumes : 
+    - Persistent volume :
+    - Persistent volume claim :
+    - Storage class :
+    
+---------------------------------------------------------------------------------------------------------------
+Route53:
+    Hosted Zones :  
+        - it is the actual domain name ( example.com ) 
+        - Can be private or public
+    
+    Sub domain : it should end with domain( www.example.com ) . 
+            - Mostly used to organize blog.example.com  | shop.example.com
+            - Create stage and dev env . Ex: dev.example.com
+            - Geo targeting . Us.example.com | uk.example.com
+            - Subdomains can be hosted on different servers .
+            - Load distribution
+    Record :
+        - Maps domain or subdomain to ip address
+        Types :
+        - A record : maps domain to ipv4
+        - AAAA record : domain to ipv6
+        - CNAME : Maps subdomain to another domain name
+        - MX : mail to email ( ex : example.com --> mail.example.com )
+        - TXT : used for verification
+        - SRV record : specifies the location 
+        - PTR (pointer record ) : ip to dns ( reverse dns service )
+        - SOA : administrative information
+        - NS ( Name Server) : authoritative name server for a domain ( using name servers the dns resolver will find dns record )
