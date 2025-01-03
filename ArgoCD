@@ -1,0 +1,21 @@
+- Continous delivery tool for kubernetes cluster based on gitops
+    - ArgoCd  is installed in cluster keeps on listening to app configuration in gitops and current config in cluster. It polls and apply if there r changes . It refers git as source of truth . 
+        - Out of Sync
+        - Synched 
+    
+Ex: when we change no.of replicas from 3 to 4 in github . It polls the config changes ( by default every 3 mins and apply to cluster )
+    
+ -  kubernetes manifest can be yml files / helm charts etc. present in gitops repository
+ - It also listens to the cluster. And keep track current state and try to get to desired state defined in git.
+    - By default it polls 
+Git ---> argoCd <--- cluster ( Sync )
+Code snippets:
+    - Kind : Application
+    - Source :
+        repoUrl:  <gitLink> 
+        Path: < folder path >
+        targetRevision : < commit >
+    - Destination:
+        Server : < api server endpoint >
+        Namespace: 
+    - syncpolicy
